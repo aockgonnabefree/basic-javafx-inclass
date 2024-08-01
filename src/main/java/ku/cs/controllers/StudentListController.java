@@ -3,13 +3,13 @@ package ku.cs.controllers;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
+import javafx.scene.chart.PieChart;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import ku.cs.models.Student;
 import ku.cs.models.StudentList;
-import ku.cs.services.FXRouter;
-import ku.cs.services.StudentHardCodeDatasource;
+import ku.cs.services.*;
 
 import java.io.IOException;
 
@@ -23,12 +23,15 @@ public class StudentListController {
 
     private StudentList studentList;
     private Student selectedStudent;
+    private Datasource<StudentList> datasource;
 
     @FXML
     public void initialize() {
         clearStudentInfo();
         clearForm();
-        StudentHardCodeDatasource datasource = new StudentHardCodeDatasource();
+        //StudentHardCodeDatasource datasource = new StudentHardCodeDatasource();
+        //Datasource<StudentList> datasource = new StudentListHardCodeDatasource();
+        datasource = new StudentListFileDatasource("data","student-list.csv");
         studentList = datasource.readData();
         showList(studentList);
         studentListView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Student>() {
@@ -90,6 +93,7 @@ public class StudentListController {
                 String scoreText = giveScoreTextField.getText();
                 double score = Double.parseDouble(scoreText);
                 selectedStudent.addScore(score);
+                datasource.writeData(studentList);
                 clearForm();
                 showStudentInfo(selectedStudent);
             }catch (NumberFormatException e) {

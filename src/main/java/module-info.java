@@ -1,4 +1,4 @@
-module ku.cs.basicjavafx {
+module ku.cs{
     requires javafx.controls;
     requires javafx.fxml;
 
